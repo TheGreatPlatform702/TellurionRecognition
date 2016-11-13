@@ -1,0 +1,7 @@
+data/*
+Debug/*
+*.mat
+*.vcxproj
+*.filters
+*.user
+*.xml
