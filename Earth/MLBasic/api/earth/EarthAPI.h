@@ -7,7 +7,7 @@
 #include "../../util/Util.h"
 
 Mat constructImageMat(unsigned char image[], const int &origin_height, const int &origin_width, const int &height, const int &width) {
-	Mat img = Mat(1, origin_height * origin_width, CV_8U, image), img_transformed;
+	Mat img = Mat(1, origin_height * origin_width, CV_8U, image);
 	Mat new_img = img.reshape(0, origin_height);
 	Mat resized_mat = ImageUtil::ImageReSize(new_img, height, width, false);
 	//resize(new_img, img_transformed, Size(height, width), 0, 0, CV_INTER_LINEAR);

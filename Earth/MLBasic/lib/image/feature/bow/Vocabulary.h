@@ -43,14 +43,18 @@ private:
 	int k;
 	DenseSIFT sift;
 	Mat vocabulary;
-	Vocabulary(vector<string> _ImageListFile, int _k):sift(DenseSIFT::build()){
+	Vocabulary(vector<string> _ImageListFile, int _k, 
+				int minHessian = 400, int width = 255, int height = 255, bool scale = false):
+		sift(DenseSIFT::build(minHessian, width, height, scale)){
 		k = _k;
 		Mat training_descriptors;
 		
+		int count = 0;
 		for (vector<string>::iterator iter = _ImageListFile.begin(); 
 			iter != _ImageListFile.end(); ++ iter) {
+			count += 1;
 			string image_file_path = *iter;
-			cout << image_file_path << endl;
+			cout << count << endl;
 			Mat image = ImageUtil::load(image_file_path);
 			if (image.rows>0 && image.cols>0){
 				sift.extractDescriptors(image);
@@ -65,8 +69,9 @@ private:
 public:
 	Vocabulary(){}
 
-	static Vocabulary build(vector<string> _ImageListFile, int k) {
-		return Vocabulary(_ImageListFile, k);
+	static Vocabulary build(vector<string> _ImageListFile, int k,
+		int minHessian = 400, int width = 255, int height = 255, bool scale = false) {
+		return Vocabulary(_ImageListFile, k, minHessian, width, height, scale);
 	}
 
 	Mat getVocabulary() {

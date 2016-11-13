@@ -66,7 +66,28 @@ public:
 			cout << "模型加载错误" << endl;
 		}
 		return (int)svm.predict(testDataMat);
+	}
 
+	static vector<int> testAllSampleSvm(const Mat &allSampleDataMat, const String &modelName)
+	{
+		/*参数注释：
+		allSampleDataMat： 所有测试数据的直方图矩阵
+		modelName:模型的名字
+		返回预测结果的标签集合
+		*/
+		vector<int> predictLabels;
+		CvSVM svm;
+		try {
+			svm.load(modelName.c_str());
+			for (int i = 0; i < allSampleDataMat.rows; i++) {
+				double response = svm.predict(allSampleDataMat.rowRange(i, i + 1));
+				predictLabels.push_back((int)response);
+			}
+		}
+		catch (exception) {
+			cout << "模型加载错误" << endl;
+		}
+		return predictLabels;
 	}
 };
 
