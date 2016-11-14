@@ -28,41 +28,28 @@ public:
 		vector<string> train_file_list = Util::getFileList(train_csv_file);
 		ModelBuilder model(dictionary_file, model_file);
 
-		FILE *dict_f = fopen(dictionary_file.c_str(), "r");
-		if (dict_f == NULL) {
-			model.generateDictionary(train_file_list, K, 400, 100, 100, false);
-			cout << "Dictionary generated" << endl;
-		}
-		else {
-			cout << "Dictionary existed!" << endl;
-		}
-		fclose(dict_f);
+		cout << "Generating Dictionary.." << endl;
+		model.generateDictionary(train_file_list, K, 400, 100, 100, true);
+		cout << "Dictionary generated" << endl;
 
-		FILE *model_f = fopen(model_file.c_str(), "r");
-		if (model_f == NULL) {
-			// train
-			Mat train_X, train_y;
-			ModelBuilder::loadFeatureAndLabel(train_csv_file, dictionary_file, 100, 100, true, train_X, train_y);
+		// train
+		Mat train_X, train_y;
+		ModelBuilder::loadFeatureAndLabel(train_csv_file, dictionary_file, 400, 100, 100, true, train_X, train_y);
 
-			CvSVMParams params;
-			params.svm_type = CvSVM::C_SVC;
-			params.kernel_type = CvSVM::LINEAR;
-			params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, 100, FLT_DIG);
+		CvSVMParams params;
+		params.svm_type = CvSVM::C_SVC;
+		params.kernel_type = CvSVM::LINEAR;
+		params.term_crit = cvTermCriteria(CV_TERMCRIT_ITER, 100, FLT_DIG);
 
-			cout << "Training..." << endl;
+		cout << "Training..." << endl;
 
-			model.train(train_X, train_y, params);
+		model.train(train_X, train_y, params);
 
-			cout << "Training successfully ended" << endl;
-		}
-		else {
-			cout << "model existed!" << endl;
-		}
-		fclose(model_f);
+		cout << "Training successfully ended" << endl;
 
 		// test
 		Mat test_X, test_y;
-		ModelBuilder::loadFeatureAndLabel(test_csv_file, dictionary_file, 100, 100, true, test_X, test_y);
+		ModelBuilder::loadFeatureAndLabel(test_csv_file, dictionary_file, 400, 100, 100, true, test_X, test_y);
 
 		//Util::writeMat(test_X, test_X_file);
 		//Util::writeMat(test_y, test_y_file);

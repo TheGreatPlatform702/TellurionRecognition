@@ -25,10 +25,10 @@ public:
 	vector<int> predict(const Mat &X) {
 		return svmTest(X);
 	}
-	static void loadFeatureAndLabel(const string &csv_file, const string &dict_path, const int &width, const int &height, bool scale, Mat &X, Mat &y) {
+	static void loadFeatureAndLabel(const string &csv_file, const string &dict_path, const int &minHessian,const int &width, const int &height, bool scale, Mat &X, Mat &y) {
 		vector< vector<string> > data = Util::ImportDataFromCSV(csv_file);
 		Mat dictionary = Util::readMat(dict_path);
-		DenseSIFT sift = DenseSIFT::build(400, width, height, true);
+		DenseSIFT sift = DenseSIFT::build(minHessian, width, height, scale);
 		ConstructHist hist = ConstructHist::build(sift, dictionary);
 		for (int i = 0; i < data.size(); i++) {
 			Mat image = ImageUtil::load(data[i][0]);
