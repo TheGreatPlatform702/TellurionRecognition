@@ -19,19 +19,19 @@ using namespace std;
 using namespace cv;
 
 #ifdef _DEBUG
-#pragma comment(lib, "opencv_core2413d")
-#pragma comment(lib, "opencv_highgui2413d")
-#pragma comment(lib, "opencv_features2d2413d")
-#pragma comment(lib, "opencv_ml2413d")
-#pragma comment(lib, "opencv_nonfree2413d")
-#pragma comment(lib, "opencv_imgproc2413d")
+#pragma comment(lib, "opencv_core249d")
+#pragma comment(lib, "opencv_highgui249d")
+#pragma comment(lib, "opencv_features2d249d")
+#pragma comment(lib, "opencv_ml249d")
+#pragma comment(lib, "opencv_nonfree249d")
+#pragma comment(lib, "opencv_imgproc249d")
 #else
-#pragma comment(lib, "opencv_core2413")
-#pragma comment(lib, "opencv_highgui2413")
-#pragma comment(lib, "opencv_features2d2413")
-#pragma comment(lib, "opencv_ml2413")
-#pragma comment(lib, "opencv_nonfree2413")
-#pragma comment(lib, "opencv_imgproc2413")
+#pragma comment(lib, "opencv_core249")
+#pragma comment(lib, "opencv_highgui249")
+#pragma comment(lib, "opencv_features2d249")
+#pragma comment(lib, "opencv_ml249")
+#pragma comment(lib, "opencv_nonfree249")
+#pragma comment(lib, "opencv_imgproc249")
 #endif
 
 class Kmeans {
