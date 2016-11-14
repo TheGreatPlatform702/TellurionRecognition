@@ -80,7 +80,8 @@ public:
 		}catch(Exception e){
 			
 		}
-		imgDescriptor = tmpImgDescriptor;
+		//imgDescriptor = tmpImgDescriptor;
+		normalize(tmpImgDescriptor, imgDescriptor, 1, NORM_L2);
 	}
 
 	Mat getHistDescriptor() {

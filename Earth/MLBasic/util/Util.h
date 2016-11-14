@@ -13,6 +13,8 @@
 #include <opencv2/objdetect/objdetect.hpp>
 #include <opencv2/nonfree/features2d.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+#include "opencv2/calib3d/calib3d.hpp"
+#include <cv.h>
 
 using namespace std;
 using namespace cv;
@@ -56,12 +58,27 @@ public:
 		}
 		cv::resize(image, unified_image, size);
 		cv::medianBlur(unified_image, unified_image, 3);
+
+		/*cout << "-----------------------------------" << endl;
+		cout << weight << " " << height << " " << scale << endl;
+		cout << image.rows << " " << image.cols << endl;
+		cout << unified_image.rows << " " << unified_image.cols << endl;
+		cout << "-----------------------------------" << endl;*/
+
 		return unified_image;
 	}
+	/*static Mat ImageSmooth(const Mat &src, const int height, const int width) {
+		IplImage img_src = src;
+		IplImage *img_dst = cvCreateImage(cvGetSize(&img_src), IPL_DEPTH_8U, 3);
+		cvSmooth(&img_src, img_dst, CV_MEDIAN, height, width);
+		return img_dst;
+	}*/
 	static cv::Mat load(std::string image_file_path) {
 		cv::Mat image;
 		if (image_file_path.find(".jpg")) 
 			image = cv::imread(image_file_path);
+		Mat smooth_image;
+		GaussianBlur(image, smooth_image, Size(3, 3), 0, 0);
 		return image;
 	}
 };
@@ -259,6 +276,14 @@ public:
 			image_file_list.push_back(data[i][0]);
 		}
 		return image_file_list;
+	}
+	static bool isFileExist(string filePath) {
+		fstream handle;
+		handle.open(filePath, ios::in);
+		bool flag = false;
+		if (handle) flag = true;
+		handle.close();
+		return flag;
 	}
 };
 

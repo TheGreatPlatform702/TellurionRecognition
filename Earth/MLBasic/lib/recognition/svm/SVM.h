@@ -29,26 +29,17 @@ public:
 		bool flag = false;
 		fstream model_file;
 		model_file.open(modelName, ios::in);
-		if (model_file)
-		{
-			cout << "模型已经训练完毕" << endl;
+		try {
+			CvSVM svm;
+			cout << "SVM分类器开始训练" << endl;
+			svm.train(trainDataMat, trainDataMatLabel, Mat(), Mat(), params);
+			svm.save(modelName.c_str());
+			cout << "SVM分类器训练完毕" << endl;
 			flag = true;
 			return flag;
 		}
-		else
-		{
-			try {
-				CvSVM svm;
-				cout << "SVM分类器开始训练" << endl;
-				svm.train(trainDataMat, trainDataMatLabel, Mat(), Mat(), params);
-				svm.save(modelName.c_str());
-				cout << "SVM分类器训练完毕" << endl;
-				flag = true;
-				return flag;
-			}
-			catch (exception) {
-				return flag;
-			}
+		catch (exception) {
+			return flag;
 		}
 	}
 

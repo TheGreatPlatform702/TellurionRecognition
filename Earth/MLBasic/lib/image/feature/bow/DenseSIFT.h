@@ -38,8 +38,10 @@ using namespace std;
 class DenseSIFT{
 private:
 	Ptr<DenseFeatureDetector> feature_detector;
+	//Ptr<SiftFeatureDetector> feature_detector;
 	Ptr<DescriptorExtractor> descriptor_extractor;
 	Ptr<DescriptorMatcher> descriptor_matcher;
+
 	vector<cv::KeyPoint> keyPoints;
 	cv::Mat descriptors;
 	bool scale;
@@ -52,11 +54,12 @@ private:
 		scale = _scale;
 		//Ptr<FeatureDetector> feature_detector(new SurfFeatureDetector(minHessian));
 		feature_detector = new DenseFeatureDetector();
+		//feature_detector = new SiftFeatureDetector();
 		//descriptor_extractor = DescriptorExtractor::create("SURF");
+		//descriptor_extractor = new BriefDescriptorExtractor();
 		descriptor_extractor = new SiftDescriptorExtractor();
 		descriptor_matcher=new FlannBasedMatcher();
 
-		
 		//this.descriptor_extractor = new SurfDescriptorExtractor();
 	}
 
