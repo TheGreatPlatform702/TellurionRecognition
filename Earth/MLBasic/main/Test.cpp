@@ -10,7 +10,7 @@
 #include "../../MLBasic/test/TestVocabulary.h"
 #include "../../MLBasic/test/TestHist.h"
 #include "../../MLBasic/test/TestUtilWriteMat.h"
-#include "../test/TestAPI.h"
+#include "../test/ModelTrain.h"
 
 using namespace std;
 using namespace cv;
@@ -38,9 +38,9 @@ int main() {
 	
 	//TestVocabulary::test();
 
-	//TestAPI::test();
-	cout << "环境配置成功" << endl;
-	getchar();
+	
+	ModelTrain::train();
+	//ModelTrain::test();
 	//TestUtilWriteMat::test();
 	//TestUtil::testRead();
 

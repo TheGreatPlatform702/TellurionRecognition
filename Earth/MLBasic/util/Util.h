@@ -14,25 +14,26 @@
 #include <opencv2/nonfree/features2d.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include "opencv2/calib3d/calib3d.hpp"
+#include "opencv2/photo/photo.hpp"
 #include <cv.h>
 
 using namespace std;
 using namespace cv;
 
 #ifdef _DEBUG
-#pragma comment(lib, "opencv_core249d")
-#pragma comment(lib, "opencv_highgui249d")
-#pragma comment(lib, "opencv_features2d249d")
-#pragma comment(lib, "opencv_ml249d")
-#pragma comment(lib, "opencv_nonfree249d")
-#pragma comment(lib, "opencv_imgproc249d")
+#pragma comment(lib, "opencv_core2413d")
+#pragma comment(lib, "opencv_highgui2413d")
+#pragma comment(lib, "opencv_features2d2413d")
+#pragma comment(lib, "opencv_ml2413d")
+#pragma comment(lib, "opencv_nonfree2413d")
+#pragma comment(lib, "opencv_imgproc2413d")
 #else
-#pragma comment(lib, "opencv_core249")
-#pragma comment(lib, "opencv_highgui249")
-#pragma comment(lib, "opencv_features2d249")
-#pragma comment(lib, "opencv_ml249")
-#pragma comment(lib, "opencv_nonfree249")
-#pragma comment(lib, "opencv_imgproc249")
+#pragma comment(lib, "opencv_core2413")
+#pragma comment(lib, "opencv_highgui2413")
+#pragma comment(lib, "opencv_features2d2413")
+#pragma comment(lib, "opencv_ml2413")
+#pragma comment(lib, "opencv_nonfree2413")
+#pragma comment(lib, "opencv_imgproc2413")
 #endif
 
 #include <direct.h>  
@@ -64,22 +65,71 @@ public:
 		cout << image.rows << " " << image.cols << endl;
 		cout << unified_image.rows << " " << unified_image.cols << endl;
 		cout << "-----------------------------------" << endl;*/
-
+		//unified_image = removeCharacters(unified_image);
 		return unified_image;
 	}
-	/*static Mat ImageSmooth(const Mat &src, const int height, const int width) {
-		IplImage img_src = src;
-		IplImage *img_dst = cvCreateImage(cvGetSize(&img_src), IPL_DEPTH_8U, 3);
-		cvSmooth(&img_src, img_dst, CV_MEDIAN, height, width);
-		return img_dst;
-	}*/
+
+	static Mat ImageCut(const Mat &origin) {
+		Mat img = ImageUtil::ImageReSize(origin, 400, 400, false);
+		int padding = 120;
+		int row_start = (int)((float)img.rows / 2 - padding);
+		int row_end = (int)((float)img.rows / 2  + padding);
+		int col_start = (int)((float)img.cols / 2 - padding);
+		int col_end = (int)((float)img.cols / 2 + padding);
+		Range row_range(row_start, row_end);
+		Range col_range(col_start, col_end);
+		return Mat(img, row_range, col_range);
+	}
+
+	static Mat ImageSmooth(const Mat &src, const int height, const int width) {
+		Mat smooth_image;
+		GaussianBlur(src, smooth_image, Size(height, width), 0, 0);
+		return smooth_image;
+	}
 	static cv::Mat load(std::string image_file_path) {
 		cv::Mat image;
 		if (image_file_path.find(".jpg")) 
 			image = cv::imread(image_file_path);
-		Mat smooth_image;
-		GaussianBlur(image, smooth_image, Size(3, 3), 0, 0);
-		return image;
+		Mat smooth_image = ImageUtil::ImageSmooth(image, 3, 3);
+		return smooth_image;
+	}
+	static Mat removeCharacters(const Mat &src_img) {
+		Mat imgCompont = ImageUtil::GetBlackComponet(src_img);
+		return ImageUtil::Inpainting(src_img, imgCompont);
+	}
+private:
+	static Mat GetBlackComponet(const Mat &srcImg)
+	{
+		Mat dstImg = srcImg.clone();
+		Mat_<Vec3b>::iterator it = dstImg.begin<Vec3b>();
+		Mat_<Vec3b>::iterator itend = dstImg.end<Vec3b>();
+		int R = 90, G = 56, B = 44, EPS = 80;
+		for (; it != itend; it++)
+		{
+			if (abs((*it)[0] - B) <= EPS && abs((*it)[1] - G) <= EPS && abs((*it)[2] - R) <= EPS) {
+
+			}
+			else
+			{
+				(*it)[0] = 0;
+				(*it)[1] = 0;
+				(*it)[2] = 0;
+			}
+		}
+		return dstImg;
+	}
+
+	static Mat Inpainting(const Mat &oriImg, const Mat &maskImg)
+	{
+		Mat grayMaskImg;
+		Mat element = getStructuringElement(MORPH_RECT, Size(7, 7));
+		dilate(maskImg, maskImg, element);//膨胀后结果作为修复掩膜
+										  //将彩色图转换为单通道灰度图，最后一个参数为通道数
+		cvtColor(maskImg, grayMaskImg, CV_BGR2GRAY, 1);
+		//修复图像的掩膜必须为8位单通道图像
+		Mat inpaintedImage;
+		inpaint(oriImg, grayMaskImg, inpaintedImage, 3, INPAINT_TELEA);
+		return inpaintedImage;
 	}
 };
 

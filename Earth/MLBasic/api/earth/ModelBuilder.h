@@ -25,16 +25,22 @@ public:
 	vector<int> predict(const Mat &X) {
 		return svmTest(X);
 	}
-	static void loadFeatureAndLabel(const string &csv_file, const string &dict_path, const int &minHessian,const int &width, const int &height, bool scale, Mat &X, Mat &y) {
+	static void loadFeatureAndLabel(const string &csv_file, const string &dict_path, 
+		const int &minHessian,const int &width, const int &height, bool scale, Mat &X, Mat &y) {
 		vector< vector<string> > data = Util::ImportDataFromCSV(csv_file);
 		Mat dictionary = Util::readMat(dict_path);
 		DenseSIFT sift = DenseSIFT::build(minHessian, width, height, scale);
 		ConstructHist hist = ConstructHist::build(sift, dictionary);
 		for (int i = 0; i < data.size(); i++) {
+			cout << data[i][0] << endl;
 			Mat image = ImageUtil::load(data[i][0]);
 			Mat new_image = ImageUtil::ImageReSize(image, width, height, scale);
+			//Mat new_image = ImageUtil::ImageCut(image);
 			hist.computeImageDescriptor(new_image);
-			X.push_back(hist.getHistDescriptor());
+			Mat x = hist.getHistDescriptor();
+			cout << x.rows << " " << x.cols << endl;
+			if (x.rows == 0 || x.cols == 0) continue;
+			X.push_back(x);
 			y.push_back(std::atoi(data[i][1].c_str()));
 		}
 	}
