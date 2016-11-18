@@ -18,28 +18,30 @@ using namespace cv;
 using namespace std;
 
 #ifdef _DEBUG
-#pragma comment(lib, "opencv_core249d")
-#pragma comment(lib, "opencv_highgui249d")
-#pragma comment(lib, "opencv_features2d249d")
-#pragma comment(lib, "opencv_ml249d")
-#pragma comment(lib, "opencv_nonfree249d")
-#pragma comment(lib, "opencv_imgproc249d")
+#pragma comment(lib, "opencv_core2413d")
+#pragma comment(lib, "opencv_highgui2413d")
+#pragma comment(lib, "opencv_features2d2413d")
+#pragma comment(lib, "opencv_ml2413d")
+#pragma comment(lib, "opencv_nonfree2413d")
+#pragma comment(lib, "opencv_imgproc2413d")
 #else
-#pragma comment(lib, "opencv_core249")
-#pragma comment(lib, "opencv_highgui249")
-#pragma comment(lib, "opencv_features2d249")
-#pragma comment(lib, "opencv_ml249")
-#pragma comment(lib, "opencv_nonfree249")
-#pragma comment(lib, "opencv_imgproc249")
+#pragma comment(lib, "opencv_core2413")
+#pragma comment(lib, "opencv_highgui2413")
+#pragma comment(lib, "opencv_features2d2413")
+#pragma comment(lib, "opencv_ml2413")
+#pragma comment(lib, "opencv_nonfree2413")
+#pragma comment(lib, "opencv_imgproc2413")
 #endif
 
 #include "../../../../../MLBasic/util/Util.h"
 
 class DenseSIFT{
 private:
-	Ptr<DenseFeatureDetector> feature_detector;
+	//Ptr<DenseFeatureDetector> feature_detector;
+	Ptr<SiftFeatureDetector> feature_detector;
 	Ptr<DescriptorExtractor> descriptor_extractor;
 	Ptr<DescriptorMatcher> descriptor_matcher;
+
 	vector<cv::KeyPoint> keyPoints;
 	cv::Mat descriptors;
 	bool scale;
@@ -51,12 +53,13 @@ private:
 		height = _height;
 		scale = _scale;
 		//Ptr<FeatureDetector> feature_detector(new SurfFeatureDetector(minHessian));
-		feature_detector = new DenseFeatureDetector();
+		//feature_detector = new DenseFeatureDetector(1.0, 1, 0.1, 8);
+		feature_detector = new SiftFeatureDetector();
 		//descriptor_extractor = DescriptorExtractor::create("SURF");
+		//descriptor_extractor = new BriefDescriptorExtractor();
 		descriptor_extractor = new SiftDescriptorExtractor();
 		descriptor_matcher=new FlannBasedMatcher();
 
-		
 		//this.descriptor_extractor = new SurfDescriptorExtractor();
 	}
 
@@ -71,6 +74,7 @@ public:
 
 	void extractDescriptors(const cv::Mat& image) {
 		cv::Mat new_image = ImageUtil::ImageReSize(image, weight, height, scale);
+		// cv::Mat new_image = ImageUtil::ImageCut(image);
 		keyPoints = vector<cv::KeyPoint>();
 		descriptors = cv::Mat();
 		feature_detector->detect(new_image, keyPoints);
@@ -88,12 +92,21 @@ public:
 
 	cv::Mat getSTDImage(const cv::Mat& image) {
 		cv::Mat new_image = ImageUtil::ImageReSize(image, weight, height, scale);
+		//cv::Mat new_image = ImageUtil::ImageCut(image);
 		return new_image;
 	}
 
-	Ptr<DenseFeatureDetector> getPtrDenseFeatureDetector() {
+	/*Ptr<DenseFeatureDetector> getPtrDenseFeatureDetector() {
+		return feature_detector;
+	}*/
+
+	Ptr<FeatureDetector> getPtrDenseFeatureDetector() {
 		return feature_detector;
 	}
+
+	/*Ptr<SiftFeatureDetector> getPtrDenseFeatureDetector() {
+		return feature_detector;
+	}*/
 
 	Ptr<DescriptorExtractor> getPtrDescriptorExtractor() {
 		return descriptor_extractor;

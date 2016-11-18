@@ -9,14 +9,14 @@
 Mat constructImageMat(unsigned char image[], const int &origin_height, const int &origin_width, const int &height, const int &width) {
 	Mat img = Mat(1, origin_height * origin_width, CV_8U, image);
 	Mat new_img = img.reshape(0, origin_height);
-	Mat resized_mat = ImageUtil::ImageReSize(new_img, height, width, false);
-	//resize(new_img, img_transformed, Size(height, width), 0, 0, CV_INTER_LINEAR);
-	return new_img;
+	Mat smooth_img = ImageUtil::ImageSmooth(new_img, 3, 3);
+	Mat resized_mat = ImageUtil::ImageReSize(smooth_img, height, width, false);
+	return resized_mat;
 }
 
 Mat getHist(const Mat &img, const string &dict_path, const int &minHessian,const int &width, const int &height) {
 	Mat dictionary = Util::readMat(dict_path);
-	DenseSIFT sift = DenseSIFT::build(minHessian, height, width, false);
+	DenseSIFT sift = DenseSIFT::build(minHessian, width, height, false);
 	ConstructHist hist = ConstructHist::build(sift, dictionary);
 	hist.computeImageDescriptor(img);
 	return hist.getHistDescriptor();

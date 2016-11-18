@@ -19,19 +19,19 @@ using namespace cv;
 using namespace std;
 
 #ifdef _DEBUG
-#pragma comment(lib, "opencv_core249d")
-#pragma comment(lib, "opencv_highgui249d")
-#pragma comment(lib, "opencv_features2d249d")
-#pragma comment(lib, "opencv_ml249d")
-#pragma comment(lib, "opencv_nonfree249d")
-#pragma comment(lib, "opencv_imgproc249d")
+#pragma comment(lib, "opencv_core2413d")
+#pragma comment(lib, "opencv_highgui2413d")
+#pragma comment(lib, "opencv_features2d2413d")
+#pragma comment(lib, "opencv_ml2413d")
+#pragma comment(lib, "opencv_nonfree2413d")
+#pragma comment(lib, "opencv_imgproc2413d")
 #else
-#pragma comment(lib, "opencv_core249")
-#pragma comment(lib, "opencv_highgui249")
-#pragma comment(lib, "opencv_features2d249")
-#pragma comment(lib, "opencv_ml249")
-#pragma comment(lib, "opencv_nonfree249")
-#pragma comment(lib, "opencv_imgproc249")
+#pragma comment(lib, "opencv_core2413")
+#pragma comment(lib, "opencv_highgui2413")
+#pragma comment(lib, "opencv_features2d2413")
+#pragma comment(lib, "opencv_ml2413")
+#pragma comment(lib, "opencv_nonfree2413")
+#pragma comment(lib, "opencv_imgproc2413")
 #endif
 
 #include "../../../../../MLBasic/lib/cluster/kmeans.h"
@@ -62,8 +62,6 @@ public:
 		hist.obj->setVocabulary(vocabulary)*/;
 		/*hist->
 			setVocabulary(vocabulary);*/
-		
-		
 	}
 
 	Mat getVocabulary() {
@@ -71,16 +69,23 @@ public:
 	}
 
 	void computeImageDescriptor(const Mat & image) {
-		Ptr<DenseFeatureDetector> dextractor = sift.getPtrDenseFeatureDetector();
+		//Ptr<DenseFeatureDetector> dextractor = sift.getPtrDenseFeatureDetector();
+		//Ptr<SiftFeatureDetector> dextractor = sift.getPtrDenseFeatureDetector();
+		Ptr<FeatureDetector> dextractor = sift.getPtrDenseFeatureDetector();
 		Mat std_image = sift.getSTDImage(image);
 		dextractor->detect(std_image, keypoints);
+		Mat output;
+		/*drawKeypoints(std_image, keypoints, output);
+		imshow("sift keypoints", output);
+		waitKey(0);*/
 		Mat tmpImgDescriptor;
 		try {
 			hist->compute(std_image, keypoints, tmpImgDescriptor);
 		}catch(Exception e){
-			
+			cout << e.err << endl;
 		}
-		imgDescriptor = tmpImgDescriptor;
+		// imgDescriptor = tmpImgDescriptor;
+		normalize(tmpImgDescriptor, imgDescriptor, 1, NORM_L2);
 	}
 
 	Mat getHistDescriptor() {
