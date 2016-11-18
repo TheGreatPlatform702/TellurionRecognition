@@ -38,8 +38,7 @@ int main() {
 	
 	//TestVocabulary::test();
 
-	//TestAPI::test();
-	cout << "环境配置成功" << endl;
+	TestAPI::test();
 	getchar();
 	//TestUtilWriteMat::test();
 	//TestUtil::testRead();
