@@ -39,6 +39,7 @@ class DenseSIFT{
 private:
 	//Ptr<DenseFeatureDetector> feature_detector;
 	Ptr<SiftFeatureDetector> feature_detector;
+	//Ptr<SurfFeatureDetector> feature_detector;
 	Ptr<DescriptorExtractor> descriptor_extractor;
 	Ptr<DescriptorMatcher> descriptor_matcher;
 
@@ -55,6 +56,7 @@ private:
 		//Ptr<FeatureDetector> feature_detector(new SurfFeatureDetector(minHessian));
 		//feature_detector = new DenseFeatureDetector(1.0, 1, 0.1, 8);
 		feature_detector = new SiftFeatureDetector();
+		//feature_detector = new SurfFeatureDetector();
 		//descriptor_extractor = DescriptorExtractor::create("SURF");
 		//descriptor_extractor = new BriefDescriptorExtractor();
 		descriptor_extractor = new SiftDescriptorExtractor();

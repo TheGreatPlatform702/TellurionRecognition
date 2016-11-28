@@ -11,6 +11,7 @@
 #include "../../MLBasic/test/TestHist.h"
 #include "../../MLBasic/test/TestUtilWriteMat.h"
 #include "../test/ModelTrain.h"
+#include "../test/LibSVMTrain.h"
 
 using namespace std;
 using namespace cv;
@@ -38,8 +39,9 @@ int main() {
 	
 	//TestVocabulary::test();
 
-	
-	ModelTrain::train();
+	//ModelTrain::train();
+	LibModelTrain::train();
+	// ModelTrain::test();
 	//ModelTrain::test();
 	//TestUtilWriteMat::test();
 	//TestUtil::testRead();

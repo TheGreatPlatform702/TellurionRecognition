@@ -22,6 +22,9 @@ public:
 	void train(const Mat &X, const Mat &y, const CvSVMParams &params){
 		svmTrain(X, y, params);
 	}
+	void train(const Mat &X, const CvSVMParams &params) {
+		svmTrain(X, params);
+	}
 	vector<int> predict(const Mat &X) {
 		return svmTest(X);
 	}
@@ -32,13 +35,12 @@ public:
 		DenseSIFT sift = DenseSIFT::build(minHessian, width, height, scale);
 		ConstructHist hist = ConstructHist::build(sift, dictionary);
 		for (int i = 0; i < data.size(); i++) {
-			cout << data[i][0] << endl;
+			cout << i << " " << data[i][0] << endl;
 			Mat image = ImageUtil::load(data[i][0]);
 			Mat new_image = ImageUtil::ImageReSize(image, width, height, scale);
 			//Mat new_image = ImageUtil::ImageCut(image);
 			hist.computeImageDescriptor(new_image);
 			Mat x = hist.getHistDescriptor();
-			cout << x.rows << " " << x.cols << endl;
 			if (x.rows == 0 || x.cols == 0) continue;
 			X.push_back(x);
 			y.push_back(std::atoi(data[i][1].c_str()));
@@ -59,6 +61,10 @@ private:
 	}
 	bool svmTrain(const Mat &X, const Mat &y, const CvSVMParams &params) {
 		bool whether_succeed = SVMModel::trainSVM(X, y, params, model_name);
+		return whether_succeed;
+	}
+	bool svmTrain(const Mat &X, const CvSVMParams &params) {
+		bool whether_succeed = SVMModel::trainSVM(X, Mat(), params, model_name);
 		return whether_succeed;
 	}
 	vector<int> svmTest(const Mat &X) {
