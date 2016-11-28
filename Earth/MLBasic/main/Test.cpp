@@ -40,8 +40,9 @@ int main() {
 	//TestVocabulary::test();
 
 	//ModelTrain::train();
+
 	LibModelTrain::train();
-	// ModelTrain::test();
+
 	//ModelTrain::test();
 	//TestUtilWriteMat::test();
 	//TestUtil::testRead();
